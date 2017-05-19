@@ -13,6 +13,7 @@ import java.net.Socket;
 public class IncomingListener {
     private static IncomingListener ourInstance;
     private Thread listeningThread;
+    ServerSocket serverSocket;
 
     public static IncomingListener getInstance() {
         if (ourInstance == null)
@@ -29,20 +30,21 @@ public class IncomingListener {
     }
 
 
-    public void stopListening() {
+    public void stopListening() throws IOException {
+        serverSocket.close();
         listeningThread.interrupt();
     }
 
     private void startServer() {
-        ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(Configurations.getPORT());
+            System.out.println("Start listening");
             while (true) {
                 Socket peer = serverSocket.accept();
                 new Thread(new IncomingConnection(peer)).start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Stopped listening");
         }
     }
 }

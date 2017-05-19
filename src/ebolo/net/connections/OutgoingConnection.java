@@ -13,16 +13,17 @@ import java.net.Socket;
  */
 public class OutgoingConnection implements Runnable{
     private Message message;
-    private Socket peer;
+    private String ipAddr;
 
-    public OutgoingConnection(Message message, String ipAddr) throws IOException {
+    public OutgoingConnection(Message message, String ipAddr) {
         this.message = message;
-        peer = new Socket(ipAddr, Configurations.getPORT());
+        this.ipAddr = ipAddr;
     }
 
     @Override
     public void run() {
         try {
+            Socket peer = new Socket(ipAddr, Configurations.getPORT());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(
                     new BufferedOutputStream(peer.getOutputStream())
             );

@@ -69,14 +69,18 @@ public class SendWindowController {
             );
             if (!errorCode.equals("000"))
                 ErrorDisplay.showError(errorCode);
+            else {
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void clear() {
+    public void close() {
         textFilePathField.setText("");
         imageFilePathField.setText("");
         ipAddrField.setText("");
+        textFilePathField.getScene().getWindow().hide();
     }
 }

@@ -1,13 +1,14 @@
 package ebolo.net.data;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by ebolo on 18/05/2017.
  */
-public class Message {
+public class Message implements Serializable {
     private String date;
     private ImageIcon encryptedImage;
 

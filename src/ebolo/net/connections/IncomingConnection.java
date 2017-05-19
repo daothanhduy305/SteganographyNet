@@ -1,6 +1,8 @@
 package ebolo.net.connections;
 
 import ebolo.net.data.Message;
+import ebolo.net.data.ui.ReceivedMessageManager;
+import javafx.application.Platform;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -25,7 +27,8 @@ public class IncomingConnection implements Runnable {
                     new BufferedInputStream(peer.getInputStream())
             );
             Message incomingMessage = (Message) objectInputStream.readObject();
-            //TODO: do something with the message
+            Platform.runLater(
+                    () -> ReceivedMessageManager.getInstance().addNewMessage(incomingMessage));
             objectInputStream.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

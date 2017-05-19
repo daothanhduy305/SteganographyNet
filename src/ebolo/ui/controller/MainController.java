@@ -1,5 +1,8 @@
 package ebolo.ui.controller;
 
+import ebolo.net.data.ui.ReceivedMessageManager;
+import ebolo.ui.utils.UIUtils;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +17,7 @@ public class MainController {
     @FXML
     private Label mesCountLabel;
 
-    private Stage sendWindow;
+    private Stage sendWindow, receivedListWindow;
 
     private static MainController ourInstance;
 
@@ -30,14 +33,31 @@ public class MainController {
     @FXML
     private void createNewSendRequest() throws IOException {
         if (sendWindow == null) {
-            sendWindow = new Stage();
-            FXMLLoader loader  =new FXMLLoader(
-                    Paths.get("./fxml/SendWindowFXML.fxml").toUri().toURL());
-            loader.setController(SendWindowController.getInstance());
-            Parent root = loader.load();
-            Scene scene = new Scene(root, 500, 500);
-            sendWindow.setScene(scene);
+            sendWindow = UIUtils.createWindow(
+                    "Create send request",
+                    "./fxml/SendWindowFXML.fxml",
+                    SendWindowController.getInstance(),
+                    500, 500
+            );
         }
         sendWindow.show();
+    }
+
+    @FXML
+    private void showReceivedList() throws IOException {
+        if (receivedListWindow == null) {
+            receivedListWindow = UIUtils.createWindow(
+                    "Received list",
+                    "./fxml/ReceivedMesWindowFXML.fxml",
+                    ReceivedMesWindowController.getInstance(),
+                    500, 500
+            );
+        }
+        receivedListWindow.show();
+    }
+
+    public void initialize() {
+        mesCountLabel.textProperty().bind(Bindings.convert(
+                ReceivedMessageManager.getInstance().sizeProperty()));
     }
 }

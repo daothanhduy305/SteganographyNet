@@ -1,6 +1,6 @@
 package ebolo.ui.controller;
 
-import ebolo.crypt.Steganography;
+import ebolo.crypt.steganography.Steganography;
 import ebolo.net.data.Message;
 import ebolo.utils.ImageUtils;
 import javafx.fxml.FXML;
@@ -41,6 +41,7 @@ public class MessageWindowController {
 
     @FXML
     private void reveal() {
-        contentBox.setText(Steganography.decrypt(message.getEncryptedImage()));
+        contentBox.setText(
+                Steganography.decrypt(message.getEncryptedImage()));
     }
 }

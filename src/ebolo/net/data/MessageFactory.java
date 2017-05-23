@@ -1,6 +1,6 @@
 package ebolo.net.data;
 
-import ebolo.crypt.Steganography;
+import ebolo.crypt.steganography.Steganography;
 import ebolo.net.listeners.OutgoingListener;
 import javafx.scene.image.Image;
 

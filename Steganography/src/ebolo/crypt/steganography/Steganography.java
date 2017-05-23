@@ -1,10 +1,9 @@
-package ebolo.crypt;
+package ebolo.crypt.steganography;
 
+import ebolo.crypt.steganography.utils.SteganographyUtils;
 import ebolo.utils.ImageUtils;
-import ebolo.crypt.utils.SteganographyUtils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
@@ -14,9 +13,19 @@ import javax.swing.*;
  * Created by ebolo on 17/05/2017.
  */
 public class Steganography {
-    private static WritableImage encryptedImage;
 
     public static ImageIcon encrypt(String message, Image originalImage) {
+        Image result = encryptInternal(message, originalImage);
+        if (result != null)
+            return new ImageIcon(SwingFXUtils.fromFXImage(result, null));
+        return null;
+    }
+
+    public static Image encrypt(Image originalImage, String message) {
+        return encryptInternal(message, originalImage);
+    }
+
+    private static WritableImage encryptInternal(String message, Image originalImage) {
         boolean[] messageBits = SteganographyUtils.stringToBits(message);
         int imageWidth = (int) originalImage.getWidth(),
                 imageHeight = (int) originalImage.getHeight();
@@ -26,22 +35,22 @@ public class Steganography {
             // TODO: find a way to throw out error
             return null;
         } else {
-            encryptedImage = new WritableImage(
+            WritableImage encryptedImage = new WritableImage(
                     originalImage.getPixelReader(),
                     imageWidth, imageHeight
             );
 
-            imageEncode(messageBits, 0);
+            imageEncode(messageBits, encryptedImage, 0);
 
             boolean[] lengthBits = SteganographyUtils.intToBits(message.length());
 
-            imageEncode(lengthBits, imageWidth * imageHeight - 11);
+            imageEncode(lengthBits, encryptedImage, imageWidth * imageHeight - 11);
 
-            return new ImageIcon(SwingFXUtils.fromFXImage(encryptedImage, null));
+            return encryptedImage;
         }
     }
 
-    private static void imageEncode(boolean[] messageBits, int start) {
+    private static void imageEncode(boolean[] messageBits, WritableImage encryptedImage, int start) {
         int pixelCounter = start;
         for (int messageBitCounter = 0;
              messageBitCounter < messageBits.length;
@@ -96,6 +105,10 @@ public class Steganography {
         return SteganographyUtils.bitsToString(
                 readFromImage(encryptedImage, 0, length * 16)
         );
+    }
+
+    public static String decrypt(Image image) {
+        return decrypt(new ImageIcon(SwingFXUtils.fromFXImage(image, null)));
     }
 
     private static boolean[] readFromImage(Image image, int start, int length) {

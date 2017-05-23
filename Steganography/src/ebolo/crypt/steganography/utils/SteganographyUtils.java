@@ -1,4 +1,4 @@
-package ebolo.crypt.utils;
+package ebolo.crypt.steganography.utils;
 
 /**
  * Created by ebolo on 17/05/2017.

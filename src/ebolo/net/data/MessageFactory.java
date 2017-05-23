@@ -14,7 +14,7 @@ import java.nio.file.Paths;
  */
 public class MessageFactory {
     public static String createSendingMessage(
-            String textFilePath, String imageFilePath, String ipAddr) throws IOException {
+            String textFilePath, String imageFilePath, String ipAddr) throws Exception {
         StringBuilder errorCodeBuilder = new StringBuilder("");
         errorCodeBuilder.append(checkFile(textFilePath));
         errorCodeBuilder.append(checkFile(imageFilePath));

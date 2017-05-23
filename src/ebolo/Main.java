@@ -1,6 +1,7 @@
 package ebolo;
 
 import ebolo.net.listeners.IncomingListener;
+import ebolo.net.listeners.OutgoingListener;
 import ebolo.ui.controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +26,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(event -> {
             try {
                 IncomingListener.getInstance().stopListening();
+                OutgoingListener.getInstance().stopListening();
             } catch (IOException e) {
                 e.printStackTrace();
             }

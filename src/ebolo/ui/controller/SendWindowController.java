@@ -60,7 +60,7 @@ public class SendWindowController {
     }
 
     @FXML
-    private void send() {
+    private void send() throws Exception {
         try {
             String errorCode = MessageFactory.createSendingMessage(
                     textFilePathField.getText(),

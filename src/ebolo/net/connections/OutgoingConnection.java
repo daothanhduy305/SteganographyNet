@@ -1,17 +1,20 @@
 package ebolo.net.connections;
 
 import ebolo.net.data.Message;
+import ebolo.ui.utils.ErrorDisplay;
 import ebolo.utils.Configurations;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.concurrent.Callable;
 
 /**
  * Created by ebolo on 18/05/2017.
  */
-public class OutgoingConnection implements Runnable{
+public class OutgoingConnection implements Callable<Boolean>{
     private Message message;
     private String ipAddr;
 
@@ -21,7 +24,7 @@ public class OutgoingConnection implements Runnable{
     }
 
     @Override
-    public void run() {
+    public Boolean call() {
         try {
             Socket peer = new Socket(ipAddr, Configurations.getPORT());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(
@@ -30,8 +33,14 @@ public class OutgoingConnection implements Runnable{
             objectOutputStream.writeObject(message);
             objectOutputStream.flush();
             objectOutputStream.close();
+            return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            if (e instanceof SocketException)
+                ErrorDisplay.showError("",
+                        ipAddr + " is unreachable!");
+            else
+                e.printStackTrace();
+            return false;
         }
     }
 }

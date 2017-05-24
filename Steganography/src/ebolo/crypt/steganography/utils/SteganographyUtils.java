@@ -43,6 +43,27 @@ public class SteganographyUtils {
         return result;
     }
 
+    public static boolean[] byteToBits(byte input) {
+        boolean[] result = new boolean[8];
+        for (int i = 0; i < 8; i++) {
+            result[i] = ((int) input & 0x80) != 0;
+            input <<= 1;
+        }
+        return result;
+    }
+
+    public static boolean[] bytesToBits(byte[] input) {
+        boolean[] result = new boolean[8 * input.length];
+        int counter = 0;
+        for (byte b : input) {
+            boolean[] bits = byteToBits(b);
+            for (int i = 0; i < 8; i++) {
+                result[counter++] = bits[i];
+            }
+        }
+        return result;
+    }
+
     public static int bitsToInt(boolean[] bits, int size) {
         int result = 0;
         for (int i = size - 1; i >= 0; i--) {
@@ -67,6 +88,28 @@ public class SteganographyUtils {
             stringBuilder.append(bitsToChar(charBits));
         }
         return stringBuilder.toString();
+    }
+
+    public static byte bitsToByte(boolean[] bits) {
+        byte b = (byte) 0;
+        for (int i = 7; i >= 0; i--) {
+            if (bits[i]) {
+                b |= (1 << (7 - i));
+            }
+        }
+        return b;
+    }
+
+    public static byte[] bitsToBytes(boolean[] bits) {
+        byte[] result = new byte[bits.length / 8];
+        for (int i = 0; i < bits.length; i += 8) {
+            boolean[] temp = new boolean[8];
+            for (int j = 0; j < 8; j++) {
+                temp[j] = bits[i + j];
+            }
+            result[i / 8] = bitsToByte(temp);
+        }
+        return result;
     }
 
     public static void printBits(boolean[] bits) {

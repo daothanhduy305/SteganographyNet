@@ -2,8 +2,9 @@ package ebolo.ui.controller;
 
 import com.sun.istack.internal.Nullable;
 import ebolo.net.data.MessageFactory;
-import ebolo.ui.utils.ErrorDisplay;
+import ebolo.ui.utils.Announcement;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
@@ -68,7 +69,8 @@ public class SendWindowController {
                     ipAddrField.getText()
             );
             if (!errorCode.equals("000"))
-                ErrorDisplay.showError(errorCode);
+                Announcement.showAnnouncement(
+                        errorCode, Alert.AlertType.ERROR, "Cannot send message");
             else {
 
             }

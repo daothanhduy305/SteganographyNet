@@ -5,7 +5,6 @@ import ebolo.net.listeners.OutgoingListener;
 import javafx.scene.image.Image;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -21,10 +20,8 @@ public class MessageFactory {
         errorCodeBuilder.append(checkIPAddr(ipAddr));
         if (errorCodeBuilder.toString().equals("000")) {
             Message message = new Message(
-                    Steganography.encrypt(
-                            new String(Files.readAllBytes(Paths.get(textFilePath))),
-                            new Image(Paths.get(imageFilePath).toUri().toURL().toString())
-                    )
+                    Steganography.encryptF(Paths.get(textFilePath),
+                            new Image(Paths.get(imageFilePath).toUri().toURL().toString()))
             );
             OutgoingListener.getInstance().send(message, ipAddr);
         }

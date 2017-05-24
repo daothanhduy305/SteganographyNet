@@ -8,45 +8,80 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import javax.swing.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by ebolo on 17/05/2017.
  */
 public class Steganography {
 
-    public static ImageIcon encrypt(String message, Image originalImage) {
-        Image result = encryptInternal(message, originalImage);
+    public static ImageIcon encryptM(String message, Image originalImage) throws IOException {
+        Image result = encryptInternal(message, originalImage, false);
         if (result != null)
             return new ImageIcon(SwingFXUtils.fromFXImage(result, null));
         return null;
     }
 
-    public static Image encrypt(Image originalImage, String message) {
-        return encryptInternal(message, originalImage);
+    public static ImageIcon encryptF(Path filePath, Image originalImage) throws IOException {
+        Image result = encryptInternal(filePath.toString(), originalImage, true);
+        if (result != null)
+            return new ImageIcon(SwingFXUtils.fromFXImage(result, null));
+        return null;
     }
 
-    private static WritableImage encryptInternal(String message, Image originalImage) {
-        boolean[] messageBits = SteganographyUtils.stringToBits(message);
+
+    private static WritableImage encryptInternal(
+            String message, Image originalImage, boolean isFile) throws IOException {
+
         int imageWidth = (int) originalImage.getWidth(),
                 imageHeight = (int) originalImage.getHeight();
+        WritableImage encryptedImage = new WritableImage(
+                originalImage.getPixelReader(),
+                imageWidth, imageHeight
+        );
 
-        if (message.length() + 33 > (imageWidth / 4) * (imageHeight / 4) * 3) {
-            // This input is longer than the limit size of the image
-            // TODO: find a way to throw out error
+        if (isFile) {
+            File file = new File(message);
+            if (file.exists()) {
+                StringBuilder extensionBuilder = new StringBuilder("");
+                for (int i = message.length() - 1; i >= 0; i--) {
+                    if (message.charAt(i) == '.')
+                        break;
+                    extensionBuilder.append(message.charAt(i));
+                }
+                boolean[] extensionBits = SteganographyUtils.stringToBits(extensionBuilder.reverse().toString());
+                boolean[] extensionLengthBits = SteganographyUtils.intToBits(extensionBuilder.toString().length());
+                boolean[] fileBits = SteganographyUtils.bytesToBits(Files.readAllBytes(file.toPath()));
+                boolean[] fileLengthBits = SteganographyUtils.intToBits(fileBits.length / 8);
+                if (extensionBits.length + fileBits.length + 64
+                        <= imageHeight * imageWidth * 3) {
+                    imageEncode(extensionBits, encryptedImage, 0);
+                    imageEncode(fileBits, encryptedImage, extensionBits.length / 3 + 1);
+                    imageEncode(extensionLengthBits, encryptedImage, imageHeight * imageWidth - 11);
+                    imageEncode(fileLengthBits, encryptedImage, imageHeight * imageWidth - 22);
+                    return encryptedImage;
+                }
+                return null;
+            }
             return null;
         } else {
-            WritableImage encryptedImage = new WritableImage(
-                    originalImage.getPixelReader(),
-                    imageWidth, imageHeight
-            );
-
-            imageEncode(messageBits, encryptedImage, 0);
-
-            boolean[] lengthBits = SteganographyUtils.intToBits(message.length());
-
-            imageEncode(lengthBits, encryptedImage, imageWidth * imageHeight - 11);
-
-            return encryptedImage;
+            boolean[] messageBits = SteganographyUtils.stringToBits(message);
+            if (message.length() + 33 > (imageWidth / 4) * (imageHeight / 4) * 3) {
+                // This input is longer than the limit size of the image
+                // TODO: find a way to throw out error
+                return null;
+            } else {
+                imageEncode(messageBits, encryptedImage, 0);
+                boolean[] lengthBits = SteganographyUtils.intToBits(message.length());
+                imageEncode(lengthBits, encryptedImage, imageWidth * imageHeight - 11);
+                return encryptedImage;
+            }
         }
     }
 
@@ -90,7 +125,7 @@ public class Steganography {
         }
     }
 
-    public static String decrypt(ImageIcon inputImage) {
+    public static String decryptM(ImageIcon inputImage) {
         Image encryptedImage = ImageUtils.imageIconToFX(inputImage);
         int imageWidth = (int) encryptedImage.getWidth(),
                 imageHeight = (int) encryptedImage.getHeight();
@@ -107,8 +142,62 @@ public class Steganography {
         );
     }
 
-    public static String decrypt(Image image) {
-        return decrypt(new ImageIcon(SwingFXUtils.fromFXImage(image, null)));
+    public static String decryptM(Image image) {
+        return decryptM(new ImageIcon(SwingFXUtils.fromFXImage(image, null)));
+    }
+
+    public static File decryptF(ImageIcon inputImage, String fileName) throws IOException {
+        Image encryptedImage = ImageUtils.imageIconToFX(inputImage);
+        int imageWidth = (int) encryptedImage.getWidth(),
+                imageHeight = (int) encryptedImage.getHeight();
+
+        int extensionLength = SteganographyUtils.bitsToInt(
+                readFromImage(
+                        encryptedImage,
+                        imageHeight * imageWidth - 11,
+                        32),
+                32
+        );
+        int fileLength = SteganographyUtils.bitsToInt(
+                readFromImage(
+                        encryptedImage,
+                        imageHeight * imageWidth - 22,
+                        32),
+                32
+        );
+        byte[] fileBytes = SteganographyUtils.bitsToBytes(
+                readFromImage(
+                        encryptedImage,
+                        extensionLength * 16 / 3 + 1,
+                        fileLength * 8)
+        );
+        String extension = SteganographyUtils.bitsToString(
+                readFromImage(
+                        encryptedImage,
+                        0,
+                        extensionLength * 16)
+        );
+
+        //Write file
+        File result = new File(fileName + '.' + extension);
+        System.out.println(result.getPath());
+        boolean isOK = true;
+        if (!result.exists())
+            isOK = result.createNewFile();
+
+        if (isOK) {
+            FileOutputStream fileOutputStream = new FileOutputStream(result);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            bufferedOutputStream.write(fileBytes);
+            bufferedOutputStream.flush();
+            bufferedOutputStream.close();
+            return result;
+        }
+        return null;
+    }
+
+    public static File decryptF(Image image, String fileName) throws IOException {
+        return decryptF(new ImageIcon(SwingFXUtils.fromFXImage(image, null)), fileName);
     }
 
     private static boolean[] readFromImage(Image image, int start, int length) {

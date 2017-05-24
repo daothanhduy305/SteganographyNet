@@ -19,7 +19,7 @@
       <RowConstraints />
    </rowConstraints>
    <children>
-      <Label text="Text file:" />
+      <Label text="Plain file:" />
       <Label text="Image file:" GridPane.rowIndex="1" />
       <Label text="IP address:" GridPane.rowIndex="2" />
       <TextField fx:id="textFilePathField" GridPane.columnIndex="1" />

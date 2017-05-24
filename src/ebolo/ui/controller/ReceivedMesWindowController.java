@@ -77,4 +77,9 @@ public class ReceivedMesWindowController {
             return row;
         });
     }
+
+    public void closeMessageWindow() {
+        if (messageWindow != null)
+            messageWindow.close();
+    }
 }

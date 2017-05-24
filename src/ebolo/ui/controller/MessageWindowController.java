@@ -2,10 +2,16 @@ package ebolo.ui.controller;
 
 import ebolo.crypt.steganography.Steganography;
 import ebolo.net.data.Message;
+import ebolo.ui.utils.Announcement;
 import ebolo.utils.ImageUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
+import javafx.stage.DirectoryChooser;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by ebolo on 22/05/2017.
@@ -16,9 +22,6 @@ public class MessageWindowController {
 
     @FXML
     private ImageView imageView;
-
-    @FXML
-    private TextArea contentBox;
 
     public static MessageWindowController getInstance() {
         if (ourInstance == null)
@@ -36,12 +39,43 @@ public class MessageWindowController {
 
     public void clear() {
         imageView.setImage(null);
-        contentBox.setText("");
     }
 
     @FXML
-    private void reveal() {
-        contentBox.setText(
-                Steganography.decrypt(message.getEncryptedImage()));
+    private void reveal() throws IOException {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        //directoryChooser.setInitialDirectory(new File(""));
+        File directory = directoryChooser.showDialog(imageView.getScene().getWindow());
+        if (directory != null) {
+            StringBuilder fileNameBuilder = new StringBuilder("");
+            new Thread(() -> {
+                try {
+                    Steganography.decryptF(
+                            message.getEncryptedImage(),
+                            fileNameBuilder
+                                    .append(directory.getPath())
+                                    .append('/')
+                                    .append(message.getDate()
+                                            .replace('/', '_')
+                                            .replace(' ', '_')
+                                            .replace(':', '_')
+                                    ).toString()
+                    );
+                    Platform.runLater(() -> {
+                        clear();
+                        ReceivedMesWindowController.getInstance().closeMessageWindow();
+                        Announcement.showAnnouncement(
+                                "",
+                                Alert.AlertType.INFORMATION,
+                                "Decrypt successfully!",
+                                "File is saved as ",
+                                fileNameBuilder.toString()
+                        );
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
 }

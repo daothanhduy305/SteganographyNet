@@ -1,8 +1,9 @@
 package ebolo.net.connections;
 
 import ebolo.net.data.Message;
-import ebolo.ui.utils.ErrorDisplay;
+import ebolo.ui.utils.Announcement;
 import ebolo.utils.Configurations;
+import javafx.scene.control.Alert;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -36,7 +37,8 @@ public class OutgoingConnection implements Callable<Boolean>{
             return true;
         } catch (IOException e) {
             if (e instanceof SocketException)
-                ErrorDisplay.showError("",
+                Announcement.showAnnouncement("", Alert.AlertType.ERROR,
+                        "Cannot send message",
                         ipAddr + " is unreachable!");
             else
                 e.printStackTrace();

@@ -33,7 +33,7 @@ public class MainController {
                     "Create send request",
                     "./fxml/SendWindowFXML.fxml",
                     SendWindowController.getInstance(),
-                    500, 500
+                    350, 125
             );
             sendWindow.setOnCloseRequest(event -> SendWindowController.getInstance().close());
         }
@@ -47,7 +47,7 @@ public class MainController {
                     "Received list",
                     "./fxml/ReceivedMesWindowFXML.fxml",
                     ReceivedMesWindowController.getInstance(),
-                    500, 500
+                    300, 500
             );
         }
         receivedListWindow.show();

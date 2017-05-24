@@ -14,10 +14,10 @@
       <RowConstraints />
    </rowConstraints>
    <children>
-      <TableView fx:id="receivedMesTableView" prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="receivedMesTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="500.0" minWidth="300.0" prefHeight="500.0" prefWidth="300.0">
         <columns>
           <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
-          <TableColumn fx:id="timeCol" prefWidth="75.0" text="Time" />
+          <TableColumn fx:id="timeCol" prefWidth="225.0" text="Time" />
         </columns>
       </TableView>
    </children>

@@ -63,7 +63,7 @@ public class ReceivedMesWindowController {
                                     "Message",
                                     "./fxml/MessageWindowFXML.fxml",
                                     MessageWindowController.getInstance(),
-                                    500, 500
+                                    500, 350
                             );
                             messageWindow.setOnCloseRequest(event1 ->
                                     MessageWindowController.getInstance().clear());

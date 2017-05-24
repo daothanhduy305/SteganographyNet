@@ -20,7 +20,7 @@ public class Main extends Application {
         loader.setController(MainController.getInstance());
         Parent root = loader.load();
         primaryStage.setTitle("Steganography Net");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 200, 75));
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event -> {

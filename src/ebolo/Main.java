@@ -3,15 +3,15 @@ package ebolo;
 import ebolo.net.listeners.IncomingListener;
 import ebolo.net.listeners.OutgoingListener;
 import ebolo.ui.controller.MainController;
+import ebolo.ui.utils.Announcement;
 import ebolo.ui.utils.UIUtils;
+import ebolo.utils.Configurations;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class Main extends Application {
     private static Stage mainStage;
@@ -31,6 +31,17 @@ public class Main extends Application {
             try {
                 IncomingListener.getInstance().stopListening();
                 OutgoingListener.getInstance().stopListening();
+                new Thread(() -> {
+                    try {
+                        synchronized (Configurations.getInstance()) {
+                            Configurations.getInstance().save();
+                        }
+                    } catch (IOException e) {
+                        synchronized (System.out) {
+                            System.out.println("Can't save configurations");
+                        }
+                    }
+                }).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -57,4 +57,8 @@ public class MainController {
         mesCountLabel.textProperty().bind(Bindings.convert(
                 ReceivedMessageManager.getInstance().sizeProperty()));
     }
+
+    public Stage getSendWindow() {
+        return sendWindow;
+    }
 }

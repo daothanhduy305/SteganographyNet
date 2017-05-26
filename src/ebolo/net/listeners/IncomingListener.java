@@ -37,7 +37,9 @@ public class IncomingListener {
 
     private void startServer() {
         try {
-            serverSocket = new ServerSocket(Configurations.getPORT());
+            synchronized (Configurations.getInstance()) {
+                serverSocket = new ServerSocket(Configurations.getInstance().getPORT());
+            }
             System.out.println("Start listening");
             while (true) {
                 Socket peer = serverSocket.accept();

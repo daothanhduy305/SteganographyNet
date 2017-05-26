@@ -3,6 +3,7 @@ package ebolo.ui.controller;
 import ebolo.crypt.steganography.Steganography;
 import ebolo.net.data.Message;
 import ebolo.ui.utils.Announcement;
+import ebolo.utils.Configurations;
 import ebolo.utils.ImageUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -44,7 +45,10 @@ public class MessageWindowController {
     @FXML
     private void reveal() throws IOException {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        //directoryChooser.setInitialDirectory(new File(""));
+        synchronized (Configurations.getInstance()) {
+            directoryChooser.setInitialDirectory(
+                    new File(Configurations.getInstance().getLastUsedPath()));
+        }
         File directory = directoryChooser.showDialog(imageView.getScene().getWindow());
         if (directory != null) {
             StringBuilder fileNameBuilder = new StringBuilder("");

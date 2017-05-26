@@ -27,7 +27,10 @@ public class OutgoingConnection implements Callable<Boolean>{
     @Override
     public Boolean call() {
         try {
-            Socket peer = new Socket(ipAddr, Configurations.getPORT());
+            Socket peer;
+            synchronized (Configurations.getInstance()) {
+                peer = new Socket(ipAddr, Configurations.getInstance().getPORT());
+            }
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(
                     new BufferedOutputStream(peer.getOutputStream())
             );

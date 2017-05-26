@@ -180,7 +180,6 @@ public class Steganography {
 
         //Write file
         File result = new File(fileName + '.' + extension);
-        System.out.println(result.getPath());
         boolean isOK = true;
         if (!result.exists())
             isOK = result.createNewFile();

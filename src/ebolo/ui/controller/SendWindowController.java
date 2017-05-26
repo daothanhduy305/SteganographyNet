@@ -3,6 +3,7 @@ package ebolo.ui.controller;
 import com.sun.istack.internal.Nullable;
 import ebolo.net.data.MessageFactory;
 import ebolo.ui.utils.Announcement;
+import ebolo.ui.utils.UIUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
@@ -29,30 +30,20 @@ public class SendWindowController {
     private SendWindowController() {
     }
 
-    private String chooseFile(@Nullable String name, FileChooser.ExtensionFilter filter) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(filter);
-        if (name != null)
-            fileChooser.setTitle(name);
-        File file = fileChooser.showOpenDialog(textFilePathField.getScene().getWindow());
-        if (file != null) {
-            return file.getPath();
-        }
-        return "";
-    }
+
 
     @FXML
     private void showTextFileChooser() {
-        textFilePathField.setText(chooseFile(
-                "Choose text file",
-                new FileChooser.ExtensionFilter("Text file", "*.txt")
+        textFilePathField.setText(UIUtils.getInstance().chooseFile(
+                "Choose plain file", MainController.getInstance().getSendWindow(),
+                null
         ));
     }
 
     @FXML
     private void showImageFileChooser() {
-        imageFilePathField.setText(chooseFile(
-                "Choose image file",
+        imageFilePathField.setText(UIUtils.getInstance().chooseFile(
+                "Choose image file", MainController.getInstance().getSendWindow(),
                 new FileChooser.ExtensionFilter(
                         "Image file",
                         "*.png", "*.jpg", "*.jpeg"

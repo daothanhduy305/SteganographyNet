@@ -14,15 +14,17 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class Main extends Application {
+    private static Stage mainStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        primaryStage = UIUtils.getInstance().createWindow(
+        mainStage = UIUtils.getInstance().createWindow(
                 "Steganography Net",
                 "MainFXML.fxml",
                 MainController.getInstance(),
                 200, 75
         );
+        primaryStage = mainStage;
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event -> {
@@ -39,5 +41,9 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getMainStage() {
+        return mainStage;
     }
 }

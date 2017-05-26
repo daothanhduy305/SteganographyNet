@@ -1,5 +1,6 @@
 package ebolo.ui.utils;
 
+import ebolo.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,6 +33,7 @@ public class UIUtils {
         Parent root = loader.load();
         Scene scene = new Scene(root, width, height);
         Stage stage = new Stage();
+        stage.initOwner(Main.getMainStage());
         stage.setScene(scene);
         stage.setTitle(name);
         return stage;

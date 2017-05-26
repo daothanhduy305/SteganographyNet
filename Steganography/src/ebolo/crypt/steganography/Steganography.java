@@ -55,15 +55,19 @@ public class Steganography {
                         break;
                     extensionBuilder.append(message.charAt(i));
                 }
-                boolean[] extensionBits = SteganographyUtils.stringToBits(extensionBuilder.reverse().toString());
-                boolean[] extensionLengthBits = SteganographyUtils.intToBits(extensionBuilder.toString().length());
-                boolean[] fileBits = SteganographyUtils.bytesToBits(Files.readAllBytes(file.toPath()));
+                boolean[] extensionBits = SteganographyUtils.stringToBits(extensionBuilder
+                        .reverse().toString());
+                boolean[] extensionLengthBits = SteganographyUtils.intToBits(extensionBuilder
+                        .toString().length());
+                boolean[] fileBits = SteganographyUtils.bytesToBits(Files.readAllBytes(
+                        file.toPath()));
                 boolean[] fileLengthBits = SteganographyUtils.intToBits(fileBits.length / 8);
                 if (extensionBits.length + fileBits.length + 64
                         <= imageHeight * imageWidth * 3) {
                     imageEncode(extensionBits, encryptedImage, 0);
                     imageEncode(fileBits, encryptedImage, extensionBits.length / 3 + 1);
-                    imageEncode(extensionLengthBits, encryptedImage, imageHeight * imageWidth - 11);
+                    imageEncode(extensionLengthBits, encryptedImage,
+                            imageHeight * imageWidth - 11);
                     imageEncode(fileLengthBits, encryptedImage, imageHeight * imageWidth - 22);
                     return encryptedImage;
                 }
@@ -85,7 +89,8 @@ public class Steganography {
         }
     }
 
-    private static void imageEncode(boolean[] messageBits, WritableImage encryptedImage, int start) {
+    private static void imageEncode(boolean[] messageBits, WritableImage encryptedImage,
+                                    int start) {
         int pixelCounter = start;
         for (int messageBitCounter = 0;
              messageBitCounter < messageBits.length;

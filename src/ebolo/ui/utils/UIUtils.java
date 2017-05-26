@@ -9,13 +9,25 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
- * Created by ebolo on 19/05/2017.
+ * Created by ebolo on 26/05/2017.
  */
 public class UIUtils {
-    public static Stage createWindow(String name, String fxmlPath, Object controller,
+    private static UIUtils ourInstance;
+
+    public static UIUtils getInstance() {
+        if (ourInstance == null)
+            ourInstance = new UIUtils();
+        return ourInstance;
+    }
+
+    private UIUtils() {
+    }
+
+    public Stage createWindow(String name, String fxmlFileName, Object controller,
                                      double width, double height)
             throws IOException {
-        FXMLLoader loader = new FXMLLoader(Paths.get(fxmlPath).toUri().toURL());
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("fxml/" + fxmlFileName));
         loader.setController(controller);
         Parent root = loader.load();
         Scene scene = new Scene(root, width, height);

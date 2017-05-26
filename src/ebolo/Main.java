@@ -3,6 +3,7 @@ package ebolo;
 import ebolo.net.listeners.IncomingListener;
 import ebolo.net.listeners.OutgoingListener;
 import ebolo.ui.controller.MainController;
+import ebolo.ui.utils.UIUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,11 +17,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(Paths.get("./fxml/MainFXML.fxml").toUri().toURL());
-        loader.setController(MainController.getInstance());
-        Parent root = loader.load();
-        primaryStage.setTitle("Steganography Net");
-        primaryStage.setScene(new Scene(root, 200, 75));
+        primaryStage = UIUtils.getInstance().createWindow(
+                "Steganography Net",
+                "MainFXML.fxml",
+                MainController.getInstance(),
+                200, 75
+        );
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event -> {

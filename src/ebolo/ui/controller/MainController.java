@@ -29,9 +29,9 @@ public class MainController {
     @FXML
     private void createNewSendRequest() throws IOException {
         if (sendWindow == null) {
-            sendWindow = UIUtils.createWindow(
+            sendWindow = UIUtils.getInstance().createWindow(
                     "Create send request",
-                    "./fxml/SendWindowFXML.fxml",
+                    "SendWindowFXML.fxml",
                     SendWindowController.getInstance(),
                     350, 125
             );
@@ -43,9 +43,9 @@ public class MainController {
     @FXML
     private void showReceivedList() throws IOException {
         if (receivedListWindow == null) {
-            receivedListWindow = UIUtils.createWindow(
+            receivedListWindow = UIUtils.getInstance().createWindow(
                     "Received list",
-                    "./fxml/ReceivedMesWindowFXML.fxml",
+                    "ReceivedMesWindowFXML.fxml",
                     ReceivedMesWindowController.getInstance(),
                     300, 500
             );

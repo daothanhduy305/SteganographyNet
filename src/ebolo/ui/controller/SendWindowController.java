@@ -33,22 +33,24 @@ public class SendWindowController {
 
 
     @FXML
-    private void showTextFileChooser() {
-        textFilePathField.setText(UIUtils.getInstance().chooseFile(
+    private void showPlainFileChooser() {
+        String plainFilePath = UIUtils.getInstance().chooseFile(
                 "Choose plain file", MainController.getInstance().getSendWindow(),
                 null
-        ));
+        );
+        textFilePathField.setText(plainFilePath.isEmpty()? textFilePathField.getText() : plainFilePath);
     }
 
     @FXML
     private void showImageFileChooser() {
-        imageFilePathField.setText(UIUtils.getInstance().chooseFile(
+        String imageFilePath = UIUtils.getInstance().chooseFile(
                 "Choose image file", MainController.getInstance().getSendWindow(),
                 new FileChooser.ExtensionFilter(
                         "Image file",
                         "*.png", "*.jpg", "*.jpeg"
                 )
-        ));
+        );
+        imageFilePathField.setText(imageFilePath.isEmpty()? imageFilePathField.getText() : imageFilePath);
     }
 
     @FXML

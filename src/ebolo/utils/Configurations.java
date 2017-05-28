@@ -10,7 +10,11 @@ import java.io.*;
 public class Configurations implements Serializable {
     private static Configurations ourInstance;
     private static final String jarFilePath =
-            Main.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+            Main.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getFile()
+                    .replace('/', File.separatorChar);
     private static final String workingDir =
             (new StringBuilder(jarFilePath))
                     .delete(
@@ -18,7 +22,9 @@ public class Configurations implements Serializable {
                             jarFilePath.length())
                     .toString();
     private static final String configPath =
-            new StringBuilder(workingDir).append("app.cfg").toString();
+            new StringBuilder(workingDir)
+                    .append("app.cfg")
+                    .toString();
     private static final int PORT = 3005;
     private String lastUsedPath;
 

@@ -26,7 +26,7 @@
       <TextField fx:id="textFilePathField" GridPane.columnIndex="1" />
       <TextField fx:id="imageFilePathField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <TextField fx:id="ipAddrField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <Button mnemonicParsing="false" onAction="#showTextFileChooser" text="..." GridPane.columnIndex="2" />
+      <Button mnemonicParsing="false" onAction="#showPlainFileChooser" text="..." GridPane.columnIndex="2" />
       <Button mnemonicParsing="false" onAction="#showImageFileChooser" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <Button mnemonicParsing="false" onAction="#send" text="Send" GridPane.columnIndex="2" GridPane.rowIndex="2" />
    </children>

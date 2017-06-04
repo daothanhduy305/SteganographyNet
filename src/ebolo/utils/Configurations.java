@@ -25,13 +25,14 @@ public class Configurations implements Serializable {
             new StringBuilder(workingDir)
                     .append("app.cfg")
                     .toString();
-    private static final int PORT = 3005;
+    private int incomingPort = 49153;
+    private int butlerPort = 49152;
     private String lastUsedPath;
 
     public static Configurations getInstance() {
-        File configFile = new File(configPath);
         if (ourInstance == null) {
             try {
+                File configFile = new File(configPath);
                 ObjectInputStream inputStream = new ObjectInputStream(
                         new BufferedInputStream(
                                 new FileInputStream(configFile)
@@ -48,8 +49,20 @@ public class Configurations implements Serializable {
     private Configurations() {
     }
 
-    public int getPORT() {
-        return PORT;
+    public int getIncomingPort() {
+        return incomingPort;
+    }
+
+    public void setIncomingPort(int incomingPort) {
+         this.incomingPort = incomingPort;
+    }
+
+    public int getButlerPort() {
+        return butlerPort;
+    }
+
+    public void setButlerPort(int butlerPort) {
+        this.butlerPort = butlerPort;
     }
 
     public void setLastUsedPath(String lastUsedPath) {

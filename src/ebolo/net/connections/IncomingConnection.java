@@ -30,6 +30,7 @@ public class IncomingConnection implements Runnable {
             Platform.runLater(
                     () -> ReceivedMessageManager.getInstance().addNewMessage(incomingMessage));
             objectInputStream.close();
+            peer.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

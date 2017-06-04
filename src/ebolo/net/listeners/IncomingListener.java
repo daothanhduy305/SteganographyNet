@@ -29,8 +29,8 @@ public class IncomingListener {
     private IncomingListener() {
     }
 
-    public void startListening() {
-        listeningThread = new Thread(this::startServer);
+    public void startListening(final ServerSocket serverSocket) {
+        listeningThread = new Thread(() -> startServer(serverSocket));
         listeningThread.start();
     }
 
@@ -41,27 +41,9 @@ public class IncomingListener {
         listeningThread.interrupt();
     }
 
-    private void startServer() {
+    private void startServer(final ServerSocket serverSocket) {
         try {
-            synchronized (Configurations.getInstance()) {
-                try {
-                    serverSocket = new ServerSocket(Configurations.getInstance().getPORT());
-                } catch (BindException e) {
-                    System.out.println(
-                            "Cannot bind socket to port " + Configurations.getInstance().getPORT()
-                    );
-                    Platform.runLater(() -> {
-                        Announcement.showAnnouncement(
-                                "",
-                                Alert.AlertType.ERROR,
-                                "Cannot Start Application",
-                                "Cannot bind socket to port "
-                                        + Configurations.getInstance().getPORT()
-                        );
-                        Main.getMainStage().close();
-                    });
-                }
-            }
+            this.serverSocket = serverSocket;
             if (serverSocket != null) {
                 System.out.println("Start listening");
                 while (true) {
@@ -70,7 +52,7 @@ public class IncomingListener {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("Stopped listening");
         }
     }

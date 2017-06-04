@@ -5,11 +5,10 @@ import ebolo.ui.utils.Announcement;
 import ebolo.utils.Configurations;
 import javafx.scene.control.Alert;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 
 /**
@@ -28,16 +27,38 @@ public class OutgoingConnection implements Callable<Boolean>{
     public Boolean call() {
         try {
             Socket peer;
-            synchronized (Configurations.getInstance()) {
-                peer = new Socket(ipAddr, Configurations.getInstance().getPORT());
+            //Scan for Butler
+            for (int tryingPort = 49152; tryingPort < 65535; tryingPort++) {
+                peer = new Socket(ipAddr, tryingPort);
+                ObjectInputStream stream = new ObjectInputStream(
+                        new BufferedInputStream(
+                                peer.getInputStream()
+                        )
+                );
+                String response = stream.readUTF();
+                stream.close();
+                peer.close();
+                System.out.println("Got direction as: " + response);
+                String[] args = response.split("\\s");
+                if (args.length == 2) {
+                    if (args[0].equals("Steganography")) {
+                        try {
+                            int port = Integer.parseInt(args[1]);
+                            peer = new Socket(ipAddr, port);
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                                    new BufferedOutputStream(peer.getOutputStream())
+                            );
+                            objectOutputStream.writeObject(message);
+                            objectOutputStream.flush();
+                            objectOutputStream.close();
+                            return true;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    }
+                }
             }
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(
-                    new BufferedOutputStream(peer.getOutputStream())
-            );
-            objectOutputStream.writeObject(message);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-            return true;
+            return false;
         } catch (IOException e) {
             if (e instanceof SocketException)
                 Announcement.showAnnouncement("", Alert.AlertType.ERROR,
